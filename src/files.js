@@ -2,16 +2,17 @@ export const files = {
     "index.js": {
       file: {
         contents: `
-              import express from "express";
-              const app = express();
-              const port = 3111;
-  
-              app.get('/',(req,res) => {
-              return res.send({msg:"Welcome to Om Sharma's Web Container."})
-              
-              app.listen(port,()=>{
-              console.log(\` Server is Running on PORT : \${port}\`)})
-              })
+              import express from 'express';
+const app = express();
+const port = 3111;
+
+app.get('/', (req, res) => {
+  res.send('Welcome to a Serverless IDE built by Om Sharma.');
+});
+
+app.listen(port, () => {
+  console.log(\`App is live at http://localhost:\${port}\`);
+});
               `,
       },
     },
@@ -26,7 +27,7 @@ export const files = {
       "nodemon": "latest"
     },
     "scripts": {
-      "start": "nodemon --watch './' index.js"
+      "start":  "nodemon index.js"
     }
   }
               

@@ -1,11 +1,10 @@
 import { WebContainer } from '@webcontainer/api';
 import { files } from './files';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 function App() {
-  const textareaRef = useRef(null); // Reference to the textarea
-  const iframeRef = useRef(null); // Reference to the iframe
-  const [terminalOutput, setTerminalOutput] = useState(''); // To store terminal logs
+  const textareaRef = useRef(null);
+  const iframeRef = useRef(null);
   let webcontainerInstance;
 
   useEffect(() => {
@@ -26,7 +25,6 @@ function App() {
       installProcess.output.pipeTo(new WritableStream({
         write(data) {
           console.log('[npm install log]:', data);
-          setTerminalOutput(prevOutput => prevOutput + '\n' + data);
         }
       }));
 
@@ -44,14 +42,13 @@ function App() {
       startProcess.output.pipeTo(new WritableStream({
         write(data) {
           console.log('[npm start log]:', data);
-          setTerminalOutput(prevOutput => prevOutput + '\n' + data);
         }
       }));
 
-      // Listen for server-ready event and update iframe source
+      // Listen for server-ready event
       webcontainerInstance.on('server-ready', (port, url) => {
         console.log(`Server ready on port ${port}, URL: ${url}`);
-        iframeRef.current.src = url; // Update iframe source
+        iframeRef.current.src = url; // Update the iframe with the server URL
       });
     }
 
@@ -59,30 +56,15 @@ function App() {
   }, []);
 
   return (
-    <div className="container">
-      <h1>WebContainer React App</h1>
-
-      {/* Main Editor / Preview layout */}
-      <div className="editor-preview">
-        <div className="editor">
-          <h3>Editor</h3>
-          <textarea ref={textareaRef} id="textareaE1" style={{ width: '100%', height: '200px' }}></textarea>
-        </div>
-
-        <div className="preview">
-          <h3>Preview</h3>
-          <iframe ref={iframeRef} id="iframeE1" src="loading.html" style={{ width: '100%', height: '400px' }}></iframe>
-        </div>
+    <>
+      <h1>WebContainer App</h1>
+      <div>
+        <textarea ref={textareaRef} id="textareaE1" style={{ width: '100%', height: '200px' }}></textarea>
       </div>
-
-      {/* Terminal Section */}
-      <div className="terminal">
-        <h3>Terminal</h3>
-        <pre style={{ backgroundColor: '#000', color: '#0f0', padding: '10px', height: '200px', overflowY: 'scroll' }}>
-          {terminalOutput}
-        </pre>
+      <div>
+        <iframe ref={iframeRef} id="iframeE1" style={{ width: '100%', height: '500px' }}></iframe>
       </div>
-    </div>
+    </>
   );
 }
 
